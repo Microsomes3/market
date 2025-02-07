@@ -21,3 +21,7 @@ func NewBlockchain(dbName string) *Blockchain {
 		TargetDifficulty: 20, //target at 20
 	}
 }
+
+func (bc *Blockchain) GetTargetDifficulty() int64 {
+	return bc.TargetDifficulty
+}
