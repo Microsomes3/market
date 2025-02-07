@@ -1,0 +1,30 @@
+{
+  "name": "goreact",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.4",
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "framer-motion": "^12.0.6",
+    "lucide-react": "^0.474.0",
+    "moment": "^2.30.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-horizontal-scrolling-menu": "^8.2.0",
+    "react-icons": "^5.4.0",
+    "react-router-dom": "^7.1.3",
+    "tailwindcss": "^4.0.4",
+    "vite": "^6.0.11"
+  }
+}
