@@ -1,0 +1,53 @@
+package main
+
+import (
+	"crypto/ecdsa"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+
+	gocryptoeth "github.com/ethereum/go-ethereum/crypto"
+)
+
+type CryptoHelper struct{}
+
+func (ci *CryptoHelper) SHA256(msg []byte) [32]byte {
+	return sha256.Sum256(msg)
+}
+
+func (ci *CryptoHelper) ByteToHex(msg []byte) string {
+	return hex.EncodeToString(msg)
+}
+
+func (ci *CryptoHelper) GeneratePrivateKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
+	fmt.Println("generate private key")
+	priv, err := gocryptoeth.GenerateKey()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return priv, &priv.PublicKey, nil
+
+}
+
+func (ci *CryptoHelper) GetPublicKeyBytes(pub *ecdsa.PublicKey) []byte {
+	return gocryptoeth.FromECDSAPub(pub)
+}
+
+func (ci *CryptoHelper) SignMessage(msg []byte, priv *ecdsa.PrivateKey) (sig []byte, e error) {
+	hashOfMsg := sha256.Sum256(msg)
+
+	sig, err := gocryptoeth.Sign(hashOfMsg[:], priv)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return sig, nil
+}
+
+func (ci *CryptoHelper) VerifyMessage(pubKey *ecdsa.PublicKey, msg []byte, sig []byte) bool {
+	hashOfMsg := sha256.Sum256(msg)
+	return gocryptoeth.VerifySignature(ci.GetPublicKeyBytes(pubKey), hashOfMsg[:], sig[:len(sig)-1])
+
+}
