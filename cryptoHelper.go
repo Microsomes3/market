@@ -4,7 +4,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 
 	gocryptoeth "github.com/ethereum/go-ethereum/crypto"
 )
@@ -20,7 +19,6 @@ func (ci *CryptoHelper) ByteToHex(msg []byte) string {
 }
 
 func (ci *CryptoHelper) GeneratePrivateKey() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
-	fmt.Println("generate private key")
 	priv, err := gocryptoeth.GenerateKey()
 	if err != nil {
 		return nil, nil, err

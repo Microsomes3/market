@@ -1,3 +1,4 @@
 package main
 
-type Block struct{}
+type Block struct {
+}

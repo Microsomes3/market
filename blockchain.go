@@ -9,6 +9,15 @@ type Blockchain struct {
 	TargetDifficulty int64
 }
 
-func NewBlockchain() *Blockchain {
-	return &Blockchain{}
+func NewBlockchain(dbName string) *Blockchain {
+	badgerDB, err := badger.Open(badger.DefaultOptions(dbName))
+	if err != nil {
+		panic(err)
+	}
+	return &Blockchain{
+		DB:               badgerDB,
+		TailBlock:        [32]byte{}, //empty, todo will be genesis first
+		Height:           0,
+		TargetDifficulty: 20, //target at 20
+	}
 }
