@@ -12,12 +12,9 @@ type POW struct {
 	TargetDiff *big.Int
 }
 
-func VerifyPow(subject *Block, diff uint64, nonce uint64) bool {
+func VerifyPow(subject *Block, diff uint64) bool {
 	td := big.NewInt(1)
 	td.Lsh(td, uint(256-diff))
-
-	subject.Nonce = nonce
-	subject.HashIt()
 
 	var intHash big.Int
 	intHash.SetBytes(subject.Hash[:])

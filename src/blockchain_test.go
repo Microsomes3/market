@@ -92,3 +92,16 @@ func TestNewBlockchai(t *testing.T) {
 	}
 
 }
+
+func TestGenesisBlockMatchesHash(t *testing.T) {
+
+	bc := Block{}
+	gensis := bc.GenesisBlock()
+
+	isValid := VerifyPow(gensis, 21)
+
+	if !isValid {
+		t.Fail()
+	}
+
+}
