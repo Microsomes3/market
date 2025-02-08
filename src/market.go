@@ -1,4 +1,4 @@
-package main
+package market
 
 type Market struct {
 	Hash      [32]byte

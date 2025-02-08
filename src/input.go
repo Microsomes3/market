@@ -1,4 +1,4 @@
-package main
+package market
 
 type Vin struct {
 	TXID [32]byte //from which tx is it coming from

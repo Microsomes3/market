@@ -1,4 +1,4 @@
-package main
+package market
 
 import (
 	"bytes"
@@ -56,12 +56,14 @@ func (b *Block) HashIt() {
 }
 
 func (b *Block) CalculateMerkleRoot() {
-	// var hashes [][32]byte
 
-	// for _, tx := range b.Tx {
-	// 	hashes = append(hashes, tx.Hash)
-	// }
+	merc := MerkleTree{}
 
-	// crp := &CryptoHelper{}
-	// b.MerkleRoot = crp.MerkleRoot(hashes)
+	for _, tx := range b.Tx {
+		tx.UpdateHash()
+
+		merc.PushHash(tx.Hash)
+	}
+
+	b.MerkleRoot = merc.Root()
 }

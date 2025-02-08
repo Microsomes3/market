@@ -1,6 +1,7 @@
-package main
+package market
 
 import (
+	"encoding/hex"
 	"fmt"
 	"math/big"
 	"testing"
@@ -24,7 +25,7 @@ func TestGenerateGenesisBlock(t *testing.T) {
 
 	crp := &CryptoHelper{}
 
-	_, pubk, _ := crp.GeneratePrivateKey()
+	_, pubk, _ := crp.GenerateDeterministicKey([]byte("burn"))
 
 	var msg [64]byte
 
@@ -61,7 +62,19 @@ func TestGenerateGenesisBlock(t *testing.T) {
 		MerkleRoot: [32]byte{},
 		Timestamp:  0,
 	}
-	_ = genesisBlock
+
+	genesisBlock.CalculateMerkleRoot()
+
+	fmt.Println("blockhash: ", genesisBlock.Hash)
+
+	POW := NewPow(genesisBlock, 10)
+
+	POW.FindNonce()
+
+	fmt.Println(hex.EncodeToString(genesisBlock.Hash[:]))
+
+	fmt.Println(genesisBlock.Nonce)
+
 }
 
 func TestNewBlockchai(t *testing.T) {

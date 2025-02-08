@@ -1,4 +1,4 @@
-package main
+package market
 
 import (
 	"fmt"
@@ -39,8 +39,6 @@ func (pow *POW) FindNonce() uint64 {
 
 		pow.Subject.Nonce = nonce
 
-		fmt.Println("Nonce: ", nonce)
-		fmt.Println("Hash: ", pow.Subject.Hash)
 		pow.Subject.HashIt()
 
 		var intHash big.Int
