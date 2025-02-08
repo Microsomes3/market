@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
+	"encoding/hex"
 )
 
 type Transaction struct {
@@ -22,6 +23,11 @@ func (tx *Transaction) Bytes() ([]byte, error) {
 		return nil, err
 	}
 	return buf.Bytes(), nil
+}
+
+func (tx *Transaction) TxHex() string {
+	txbytes, _ := tx.Bytes()
+	return hex.EncodeToString(txbytes)
 }
 
 func (tx *Transaction) HashIt() [32]byte {

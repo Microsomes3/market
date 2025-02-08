@@ -21,6 +21,18 @@ type Block struct {
 	Timestamp int64
 }
 
+func NewBlockTemplate() *Block {
+	return &Block{
+		Hash:       [32]byte{},
+		BlockSize:  0,
+		Tx:         []Transaction{},
+		PrevHash:   [32]byte{},
+		Nonce:      0,
+		MerkleRoot: [32]byte{},
+		Timestamp:  0,
+	}
+}
+
 func (b *Block) Bytes() ([]byte, error) {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
@@ -41,4 +53,15 @@ func (b *Block) HashIt() {
 
 	crp := &CryptoHelper{}
 	b.Hash = crp.SHA256(bytes)
+}
+
+func (b *Block) CalculateMerkleRoot() {
+	// var hashes [][32]byte
+
+	// for _, tx := range b.Tx {
+	// 	hashes = append(hashes, tx.Hash)
+	// }
+
+	// crp := &CryptoHelper{}
+	// b.MerkleRoot = crp.MerkleRoot(hashes)
 }

@@ -19,3 +19,63 @@ func TestBc(t *testing.T) {
 
 	fmt.Println(a.Int64())
 }
+
+func TestGenerateGenesisBlock(t *testing.T) {
+
+	crp := &CryptoHelper{}
+
+	_, pubk, _ := crp.GeneratePrivateKey()
+
+	var msg [64]byte
+
+	copy(msg[:], "UK demands access to Apple users' encrypted data/7 February 2025")
+
+	fmt.Println(string(msg[:]))
+
+	vin := Vin{
+		TXID:      [32]byte{},
+		Vout:      0,
+		Signature: msg,
+	}
+
+	vout := Vout{
+		Value: 50 * 1_000_000,
+		N:     0,
+		PK:    crp.GetPublicKeyBytes(pubk),
+	}
+
+	tx1 := Transaction{
+		Hash:     [32]byte{},
+		Fee:      0,
+		Locktime: 0,
+		Vin:      []Vin{vin},
+		Vout:     []Vout{vout},
+	}
+
+	genesisBlock := &Block{
+		Hash:       [32]byte{},
+		PrevHash:   [32]byte{},
+		BlockSize:  0,
+		Tx:         []Transaction{tx1},
+		Nonce:      0,
+		MerkleRoot: [32]byte{},
+		Timestamp:  0,
+	}
+	_ = genesisBlock
+}
+
+func TestNewBlockchai(t *testing.T) {
+
+	blockchain := NewBlockchain("testnet")
+
+	fmt.Println(blockchain.TailBlock)
+
+	block1 := NewBlockTemplate()
+
+	err := blockchain.AddBlock(block1)
+
+	if err != nil {
+		t.Fail()
+	}
+
+}

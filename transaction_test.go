@@ -25,7 +25,7 @@ func TestCreateTr(t *testing.T) {
 	input1 := Vin{
 		TXID:      [32]byte{},
 		Vout:      0,
-		Signature: [32]byte{},
+		Signature: [64]byte{},
 	}
 
 	tx.PushInput(input1)

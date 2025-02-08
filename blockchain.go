@@ -1,12 +1,17 @@
 package main
 
-import "github.com/dgraph-io/badger/v3"
+import (
+	"errors"
+
+	"github.com/dgraph-io/badger/v3"
+)
 
 type Blockchain struct {
 	DB               *badger.DB
 	TailBlock        [32]byte //hash of the latest block
 	Height           int
 	TargetDifficulty int64
+	OrphanBlocks     []Block //keep these around until they can be added to the chain, or discarded
 }
 
 func NewBlockchain(dbName string) *Blockchain {
@@ -24,4 +29,30 @@ func NewBlockchain(dbName string) *Blockchain {
 
 func (bc *Blockchain) GetTargetDifficulty() int64 {
 	return bc.TargetDifficulty
+}
+
+func (bc *Blockchain) AddBlock(block *Block) error {
+	//verify block is legal
+	//verify coinbase is present
+
+	//if block has no prev hash reject
+
+	if block.PrevHash == [32]byte{} {
+		return errors.New("no prev hash")
+	}
+
+	err := bc.DB.Update(func(txn *badger.Txn) error {
+
+		bcbytes, _ := block.Bytes()
+
+		return txn.Set(block.Hash[:], bcbytes)
+
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
