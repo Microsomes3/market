@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/hex"
+	"encoding/json"
 )
 
 type Block struct {
 	Hash [32]byte
 
-	BlockSize uint64 //in bytes
+	BlockSize uint64
 
 	Tx []Transaction
 
@@ -20,6 +21,26 @@ type Block struct {
 	MerkleRoot [32]byte
 
 	Timestamp int64
+}
+
+func (b *Block) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Hash       string        `json:"hash"`
+		PrevHash   string        `json:"prev_hash"`
+		MerkleRoot string        `json:"merkle_root"`
+		Nonce      uint64        `json:"nonce"`
+		BlockSize  uint64        `json:"size"`
+		Timestamp  int64         `json:"timestamp"`
+		Tx         []Transaction `json:"tx"`
+	}{
+		Hash:       hex.EncodeToString(b.Hash[:]),
+		PrevHash:   hex.EncodeToString(b.PrevHash[:]),
+		MerkleRoot: hex.EncodeToString(b.MerkleRoot[:]),
+		Nonce:      b.Nonce,
+		BlockSize:  b.BlockSize,
+		Timestamp:  b.Timestamp,
+		Tx:         b.Tx,
+	})
 }
 
 func NewBlockTemplate() *Block {
@@ -117,4 +138,13 @@ func (b *Block) GenesisBlock() *Block {
 	}
 
 	return genesisBlock
+}
+
+func VerifyBlockNoContext(b *Block) bool {
+	//this will perform some checks without using the database
+	//so it cant check if the transactions are valid, if the input and outputs are valid
+	//its used to perform basic checks
+	//such as coinbase tx is present
+
+	return true
 }

@@ -32,7 +32,7 @@ func TestCanFindPOWHash(t *testing.T) {
 		t.Error("Nonce does not match")
 	}
 
-	isValid := VerifyPow(b1, 10, nonce)
+	isValid := VerifyPow(b1, 10)
 
 	if !isValid {
 		t.Fail()
