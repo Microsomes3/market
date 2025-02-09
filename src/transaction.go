@@ -4,15 +4,32 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/hex"
+	"encoding/json"
 )
 
 type Transaction struct {
-	Hash [32]byte
+	Hash [32]byte `json:"hash"`
 
 	Vin      []Vin
 	Vout     []Vout
 	Fee      uint64
 	Locktime uint64 //when this tx can be spent
+}
+
+func (t *Transaction) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Hash     string `json:"hash"`
+		Fee      uint64 `json:"fee"`
+		Locktime uint64 `json:"locktime"`
+		Vin      []Vin  `json:"vin"`
+		Vout     []Vout `json:"vout"`
+	}{
+		Hash:     hex.EncodeToString(t.Hash[:]),
+		Fee:      t.Fee,
+		Locktime: t.Locktime,
+		Vin:      t.Vin,
+		Vout:     t.Vout,
+	})
 }
 
 // Bytes serializes the transaction using gob encoding

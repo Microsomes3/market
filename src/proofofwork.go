@@ -62,7 +62,6 @@ func (pow *POW) FindNonceWithPrefixedHash(suffix string) uint64 {
 
 func (pow *POW) FindNonce() uint64 {
 	nonce := uint64(0)
-	maxValue := 1844674407370955161
 	for {
 
 		pow.Subject.Nonce = nonce
@@ -79,7 +78,7 @@ func (pow *POW) FindNonce() uint64 {
 			break
 		}
 
-		fmt.Println(fmt.Sprintf("%d/%d", nonce, maxValue))
+		fmt.Println(hex.EncodeToString(pow.Subject.Hash[:]))
 
 		nonce++
 

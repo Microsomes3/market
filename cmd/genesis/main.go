@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"os"
+	"time"
 
 	market "microsomes.com/silky/src"
 )
@@ -12,7 +15,15 @@ func main() {
 	//this will eventually be a cli tool using it as a quick placeholder and to generate the main genesis block
 	crp := market.CryptoHelper{}
 
-	_, pubk, _ := crp.GenerateDeterministicKey([]byte("burn"))
+	// _, pubk, _ := crp.GenerateDeterministicKey([]byte("burn"))
+	priv, pubk, _ := crp.GeneratePrivateKey()
+
+	pr, _ := os.Create("genesis_private")
+
+	hexEncodedPrivateKey := hex.EncodeToString(crp.GetPrivateKeyBytes(priv))
+
+	pr.WriteString(hexEncodedPrivateKey)
+	pr.Close()
 
 	var msg [64]byte
 
@@ -32,6 +43,11 @@ func main() {
 		PK:    crp.GetPublicKeyBytes(pubk),
 	}
 
+	fmt.Println(crp.GetPublicKeyBytes(pubk))
+
+	fmt.Println("pkk", vout)
+	// os.Exit(1)
+
 	tx1 := market.Transaction{
 		Hash:     [32]byte{},
 		Fee:      0,
@@ -39,6 +55,7 @@ func main() {
 		Vin:      []market.Vin{vin},
 		Vout:     []market.Vout{vout},
 	}
+	tx1.UpdateHash()
 
 	genesisBlock := &market.Block{
 		Hash:       [32]byte{},
@@ -54,7 +71,9 @@ func main() {
 
 	fmt.Println("blockhash: ", genesisBlock.Hash)
 
-	POW := market.NewPow(genesisBlock, 21)
+	POW := market.NewPow(genesisBlock, 16)
+
+	startTime := time.Now().Unix()
 
 	POW.FindNonce()
 
@@ -63,6 +82,17 @@ func main() {
 	fmt.Println("nonce", genesisBlock.Nonce)
 	fmt.Println("timestamp", genesisBlock.Timestamp)
 	fmt.Println("merkleroot", genesisBlock.MerkleRoot)
+
+	taken := time.Now().Unix() - startTime
+
+	fmt.Println("seconds taken:", taken)
+
+	genesisBlockF, err := os.Create("genesis.json")
+
+	if err != nil {
+		panic(err.Error())
+	}
+	json.NewEncoder(genesisBlockF).Encode(genesisBlock)
 
 	//000000b5f68cf4df0587440fb66843afd0ebf2e88545c97a1bd6d0cfc01dea3c
 	// 3239645

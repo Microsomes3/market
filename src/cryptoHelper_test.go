@@ -67,3 +67,37 @@ func TestItCanVerify(t *testing.T) {
 	}
 
 }
+
+func TestItCanTurnPrivKeyToBytesAndBack(t *testing.T) {
+
+	crp := CryptoHelper{}
+	privk, _, err := crp.GeneratePrivateKey()
+
+	if err != nil {
+		t.Fail()
+	}
+
+	privKBytes := crp.GetPrivateKeyBytes(privk)
+
+	x := privk.X
+	y := privk.Y
+
+	if len(privKBytes) != 32 {
+		t.Fail()
+	}
+
+	privk2, err := crp.GetPrivKeyFromBytes(privKBytes)
+
+	if err != nil {
+		t.Fail()
+	}
+
+	if x.Cmp(privk2.X) != 0 {
+		t.Fail()
+	}
+
+	if y.Cmp(privk2.Y) != 0 {
+		t.Fail()
+	}
+
+}

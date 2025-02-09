@@ -105,3 +105,23 @@ func TestGenesisBlockMatchesHash(t *testing.T) {
 	}
 
 }
+
+func TestVerifyGenesisBlockIsValid(t *testing.T) {
+	bc := Block{}
+	genesis := bc.GenesisBlock()
+
+	isValid := VerifyPow(genesis, 21) //just checks the hash matches the difficulty required
+
+	if !isValid {
+		t.Fail()
+	}
+
+	genesis.HashIt()
+
+	fmt.Println(hex.EncodeToString(genesis.Hash[:]))
+
+	if hex.EncodeToString(genesis.Hash[:]) != "000005997cbc47eb78418a96c0213b4002fdbbcaa01d958a8de975f94eddab4d" {
+		t.Fail()
+	}
+
+}
