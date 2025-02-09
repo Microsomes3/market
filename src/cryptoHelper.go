@@ -42,6 +42,19 @@ func (ci *CryptoHelper) GeneratePrivateKey() (*ecdsa.PrivateKey, *ecdsa.PublicKe
 
 }
 
+func (ci *CryptoHelper) GetPrivKeyFromBytes(privKeyBytes []byte) (*ecdsa.PrivateKey, error) {
+	priv, err := gocryptoeth.HexToECDSA(hex.EncodeToString(privKeyBytes))
+	if err != nil {
+		return nil, err
+	}
+
+	return priv, nil
+}
+
+func (ci *CryptoHelper) GetPrivateKeyBytes(priv *ecdsa.PrivateKey) []byte {
+	return gocryptoeth.FromECDSA(priv)
+}
+
 func (ci *CryptoHelper) GetPublicKeyBytes(pub *ecdsa.PublicKey) []byte {
 	if pub == nil {
 		panic("wtf")
