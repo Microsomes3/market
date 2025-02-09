@@ -73,6 +73,10 @@ func (b *Block) HashIt() {
 		panic(err)
 	}
 
+	bx := len(bytes)
+
+	b.BlockSize = uint64(bx)
+
 	crp := &CryptoHelper{}
 	b.Hash = crp.SHA256(bytes)
 }
