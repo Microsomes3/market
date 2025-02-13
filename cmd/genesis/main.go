@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -45,9 +46,6 @@ func main() {
 
 	fmt.Println(crp.GetPublicKeyBytes(pubk))
 
-	fmt.Println("pkk", vout)
-	// os.Exit(1)
-
 	tx1 := market.Transaction{
 		Hash:     [32]byte{},
 		Fee:      0,
@@ -71,7 +69,7 @@ func main() {
 
 	fmt.Println("blockhash: ", genesisBlock.Hash)
 
-	POW := market.NewPow(genesisBlock, 16)
+	POW := market.NewPow(genesisBlock, 25)
 
 	startTime := time.Now().Unix()
 
@@ -87,12 +85,46 @@ func main() {
 
 	fmt.Println("seconds taken:", taken)
 
+	fmt.Println("orgnonce", genesisBlock.Nonce)
+	fmt.Println("orgnonce", genesisBlock.Hash)
+	fmt.Println(hex.EncodeToString(genesisBlock.Hash[:]))
+
+	genesisBlock.HashIt()
+
+	fmt.Println("orgnonce", hex.EncodeToString(genesisBlock.Hash[:]))
+
+	by, _ := genesisBlock.BytesWithoutHeader()
+
+	sha2 := sha256.Sum256(by)
+
+	fmt.Println(hex.EncodeToString(sha2[:]))
+
 	genesisBlockF, err := os.Create("genesis.json")
 
 	if err != nil {
 		panic(err.Error())
 	}
 	json.NewEncoder(genesisBlockF).Encode(genesisBlock)
+
+	bytesBlock, err := genesisBlock.Bytes()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fblock, err := os.Create("genesis_block2")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fblock.Write(bytesBlock)
+
+	fblock.Close()
+
+	isValid := genesisBlock.VerifyBlock()
+
+	fmt.Println(isValid)
 
 	//000000b5f68cf4df0587440fb66843afd0ebf2e88545c97a1bd6d0cfc01dea3c
 	// 3239645

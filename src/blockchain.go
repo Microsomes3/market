@@ -2,6 +2,7 @@ package market
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
 )
@@ -35,24 +36,13 @@ func (bc *Blockchain) AddBlock(block *Block) error {
 	//verify block is legal
 	//verify coinbase is present
 
-	//if block has no prev hash reject
+	isvalid := block.VerifyBlock()
 
-	if block.PrevHash == [32]byte{} {
-		return errors.New("no prev hash")
+	if !isvalid {
+		return errors.New("block is invalid")
 	}
 
-	err := bc.DB.Update(func(txn *badger.Txn) error {
-
-		bcbytes, _ := block.Bytes()
-
-		return txn.Set(block.Hash[:], bcbytes)
-
-	})
-
-	if err != nil {
-		return err
-	}
-
+	fmt.Println("added block")
 	return nil
 
 }

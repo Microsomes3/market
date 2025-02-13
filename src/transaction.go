@@ -32,6 +32,34 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (tx *Transaction) UnmarshalJSON(bdata []byte) error {
+
+	var tempTX struct {
+		Hash     string `json:"hash"`
+		Fee      uint64 `json:"fee"`
+		Locktime uint64 `json:"locktime"`
+		Vin      []Vin  `json:"vin"`
+		Vout     []Vout `json:"vout"`
+	}
+
+	if err := json.Unmarshal(bdata, &tempTX); err != nil {
+		return err
+	}
+
+	hashE, _ := hex.DecodeString(tempTX.Hash)
+
+	copy(tx.Hash[:], hashE)
+
+	tx.Fee = tempTX.Fee
+	tx.Locktime = tempTX.Locktime
+
+	tx.Vin = tempTX.Vin
+
+	tx.Vout = tempTX.Vout
+
+	return nil
+}
+
 // Bytes serializes the transaction using gob encoding
 func (tx *Transaction) Bytes() ([]byte, error) {
 	var buf bytes.Buffer

@@ -22,3 +22,30 @@ func (vout *Vout) MarshalJSON() ([]byte, error) {
 		PK:    hex.EncodeToString(vout.PK[:]),
 	})
 }
+
+func (vout *Vout) UnmarshalJSON(bdata []byte) error {
+
+	var tempVout struct {
+		Value uint64 `json:"value"`
+		N     uint64 `json:"n"`
+		PK    string `json:"publicKey"`
+	}
+
+	if err := json.Unmarshal(bdata, &tempVout); err != nil {
+		return err
+	}
+
+	vout.Value = tempVout.Value
+
+	vout.N = tempVout.N
+
+	pkE, err := hex.DecodeString(tempVout.PK)
+
+	if err != nil {
+		panic(err)
+	}
+
+	vout.PK = pkE
+
+	return nil
+}

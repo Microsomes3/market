@@ -23,3 +23,29 @@ func (vin *Vin) MarshalJSON() ([]byte, error) {
 		Sig:  hex.EncodeToString(vin.Signature[:]),
 	})
 }
+
+func (vin *Vin) UnmarshalJSON(bdata []byte) error {
+
+	var tempVin struct {
+		TXID string `json:"txid"`
+		Vout int    `json:"vout"`
+		Sig  string `json:"sig"`
+	}
+
+	if err := json.Unmarshal(bdata, &tempVin); err != nil {
+		return err
+	}
+
+	txidE, _ := hex.DecodeString(tempVin.TXID)
+
+	copy(vin.TXID[:], txidE)
+
+	vin.Vout = tempVin.Vout
+
+	sigE, _ := hex.DecodeString(tempVin.Sig)
+
+	copy(vin.Signature[:], sigE)
+
+	return nil
+
+}
